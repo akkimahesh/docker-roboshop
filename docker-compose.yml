@@ -7,6 +7,8 @@ services:
     container_name: mongodb
     networks:
       - default
+    volumes:
+      - mongodb:/data/db
 
   rabbitmq:
     build: ./rabbitmq
@@ -14,6 +16,8 @@ services:
     container_name: rabbitmq
     networks:
       - default
+    volumes:
+      - rabbitmq:/var/lib/rabbitmq
 
   user:
     build: ./user
@@ -23,7 +27,7 @@ services:
       - default
     depends_on:
       - mongodb
-      
+
   catalogue:
     build: ./catalogue
     image: catalogue:v1
@@ -38,6 +42,8 @@ services:
     container_name: mysql
     networks:
       - default
+    volumes:
+      - mysql:/var/lib/mysql
 
   shipping:
     build: ./shipping
@@ -62,6 +68,8 @@ services:
     container_name: redis
     networks:
       - default
+    volumes:
+      - redis:/data
 
   cart:
     build: ./cart
@@ -81,7 +89,17 @@ services:
     networks:
       - default
     depends_on:
-      - rabbitmq
+      - catalogue
+      - cart
+      - shipping
+      - payments
+      - user
+
+volumes:
+  mongodb:
+  mysql:
+  redis:
+  rabbitmq:
 
 networks:
   default:
